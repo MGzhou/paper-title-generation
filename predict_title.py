@@ -1,33 +1,11 @@
-<h1 align="center">paper-title-generation</h1>
-<p align="center">
-中文论文标题生成模型
-<br>
-</p>
-
-
-## 介绍
-
-基于[PromptCLUE](https://modelscope.cn/models/ClueAI/PromptCLUE)微调的中文论文标题生成模型。
-
-使用了71W篇论文标题和摘要进行微调。
-
-## 下载模型
-
-| 下载网站    | 地址                                                         |
-| ----------- | ------------------------------------------------------------ |
-| modelscope  | [download](https://modelscope.cn/models/mscoder/paper-title-generation/summary) |
-| huggingface | [download](https://huggingface.co/Luoaho/paper-title-generation) |
-
-
-
-## 使用
-
-> 推荐 transformers >= 4.33.2
->
-> 使用时需要设置模型路径`model_name`
-
-```python
+#!/usr/bin/env python
+# -*- coding:utf-8 -*-
+'''
+@Time :2024/12/12 09:24:41
+@Desc :None
+'''
 import torch
+# 推荐 transformers >= 4.33.2
 from transformers import AutoTokenizer, AutoModelForSeq2SeqLM
 
 def preprocess(text):
@@ -77,30 +55,10 @@ def predict(model, tokenizer, text, title_num=1, sample=False, top_p=0.6, input_
 
 if __name__ == "__main__":
     device = torch.device("cpu")  # 如果使用GPU 为 "cuda"
-    
-    model_name = "[model_path]"   ## 模型路径
-    
+    model_name = "/data/zmp/progect/LLM/finetuning/mt5/outputs/model_files_1"
     tokenizer = AutoTokenizer.from_pretrained(model_name)
     model = AutoModelForSeq2SeqLM.from_pretrained(model_name).to(device)
     # 原标题：植物对盐碱胁迫的响应机制研究进展
     text = """盐碱胁迫是制约植物生长发育的主要非生物胁迫之一,也是制约农作物生产和生态环境建设的严峻问题。研究作物的耐盐碱机理,对开发和有效利用盐碱地有重要的现实意义。许多研究将盐碱胁迫笼统称为盐胁迫,实际上这是两种不同的非生物胁迫,且碱胁迫对植物的伤害要大于盐胁迫。总结性阐述了盐碱胁迫对植物的危害。从生物量、光合作用、离子平衡和膜透性等方面分析了植物对盐碱胁迫的响应机制,并结合最新研究从多角度综述了植物的抗盐碱机理,包括合成渗透调节物质、提高抗氧化酶活性、对离子的选择性吸收及p H平衡和诱导抗盐碱相关基因表达。提出了抗盐碱性的途径,即外源物质的加入、与真菌的协同效应、利用生物技术手段、培育耐盐碱品种和抗性锻炼。最后针对植物适应盐碱逆境方面的研究进行了展望,提出了当前研究需要解决的问题和突破口,旨在为提高植物耐盐碱能力、增加作物产量提供一定的理论依据。"""
     title_list = predict(model, tokenizer, text, title_num=3, sample=False, top_p=0.6, input_length=512, output_length=128, device=device)
-    print(title_list)
-```
-
-生成标题样例
-
-```python
-['植物对盐碱胁迫的响应机制及抗盐碱机理研究进展', '植物对盐碱胁迫的响应机制及其抗盐碱机理研究进展', '植物耐盐碱机理及抗盐碱机理研究进展']
-```
-
-
-
-### 感谢
-
-[PromptCLUE](https://modelscope.cn/models/ClueAI/PromptCLUE)
-
-
-
-
-
+    print(title_list)  # ['植物对盐碱胁迫的响应机制及抗盐碱机理研究进展', '植物对盐碱胁迫的响应机制及其抗盐碱机理研究进展', '植物耐盐碱机理及抗盐碱机理研究进展']
